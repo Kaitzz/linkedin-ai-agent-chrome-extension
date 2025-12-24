@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkedIn AI Agent</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🤖 LinkedIn AI Agent</h1>
+      <p class="subtitle">Auto-connect with hiring managers</p>
+    </header>
+
+    <!-- Server Connection Status -->
+    <div class="server-status" id="serverStatus">
+      <span class="server-dot" id="serverDot"></span>
+      <span id="serverText">Checking server...</span>
+    </div>
+
+    <!-- Status Section -->
+    <div class="status-bar" id="statusBar">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Ready to scan</span>
+    </div>
+
+    <!-- Universal Auto-Fill (works on ANY website) -->
+    <div class="universal-autofill" style="padding:10px;margin-bottom:10px;background:linear-gradient(135deg, #667eea22 0%, #764ba222 100%);border-radius:8px;border:1px solid #667eea44;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:16px;">🌐</span>
+        <span style="font-weight:600;font-size:13px;">Quick Auto-Fill</span>
+        <span style="font-size:10px;color:#666;margin-left:auto;">Any website</span>
+      </div>
+      <button id="universalAutoFillBtn" class="btn btn-primary" style="width:100%;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);border:none;padding:10px;font-size:13px;">
+        🤖 Auto-Fill This Page
+      </button>
+      <div id="universalFillStatus" style="font-size:11px;margin-top:6px;color:#666;text-align:center;"></div>
+    </div>
+
+    <!-- User Stats (from Backend) -->
+    <div class="stats-section" id="statsSection" style="display: none;">
+      <div class="stat-item">
+        <span class="stat-value" id="statTotalJobs">0</span>
+        <span class="stat-label">Jobs Scanned</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="statAvgScore">0%</span>
+        <span class="stat-label">Avg Match</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="statToday">0</span>
+        <span class="stat-label">Today</span>
+      </div>
+    </div>
+
+    <!-- Main Actions -->
+    <div class="actions">
+      <button id="scanBtn" class="btn btn-primary">
+        🔍 Scan Current Page
+      </button>
+      <button id="analyzeBtn" class="btn btn-secondary" disabled>
+        🤖 Analyze with AI
+      </button>
+      <button id="saveToServerBtn" class="btn btn-secondary" disabled>
+        ☁️ Save to Server
+      </button>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section" id="resultsSection" style="display: none;">
+      <h2>Found Posts <span id="postCount">(0)</span></h2>
+      <div class="results-list" id="resultsList">
+        <!-- Posts will be injected here -->
+      </div>
+    </div>
+
+    <!-- Settings Toggle -->
+    <details class="settings-section">
+      <summary>⚙️ Settings</summary>
+      <div class="settings-content">
+        <div class="setting-item">
+          <label for="serverUrl">Backend Server URL</label>
+          <input type="text" id="serverUrl" placeholder="http://localhost:8000">
+        </div>
+        <div class="setting-item">
+          <label for="userEmail">Email (for sync)</label>
+          <input type="email" id="userEmail" placeholder="your@email.com">
+        </div>
+        <div class="setting-item">
+          <label for="targetRole">Target Role</label>
+          <input type="text" id="targetRole" placeholder="e.g., Software Engineer Intern">
+        </div>
+        <div class="setting-item">
+          <label for="location">Location</label>
+          <input type="text" id="location" placeholder="e.g., San Francisco, Remote">
+        </div>
+        <div class="setting-item">
+          <label for="apiKey">OpenAI API Key</label>
+          <input type="password" id="apiKey" placeholder="sk-...">
+          <small style="color:#888;font-size:10px;">Stored securely on server, not in browser</small>
+        </div>
+        <button id="saveSettings" class="btn btn-small">Save Settings</button>
+        <button id="registerBtn" class="btn btn-small" style="margin-left:5px;background:#22c55e;">Register/Login</button>
+      </div>
+    </details>
+
+    <!-- User Profile for Auto-Apply -->
+    <details class="settings-section">
+      <summary>👤 Profile (Auto-Fill)</summary>
+      <div class="settings-content">
+        <div style="display:flex;gap:8px;">
+          <div class="setting-item" style="flex:1">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" placeholder="John">
+          </div>
+          <div class="setting-item" style="flex:1">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" placeholder="Doe">
+          </div>
+        </div>
+        <div class="setting-item">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
+        </div>
+        <div class="setting-item">
+          <label for="city">City</label>
+          <input type="text" id="city" placeholder="San Francisco, CA">
+        </div>
+        <div class="setting-item">
+          <label for="linkedinUrl">LinkedIn URL</label>
+          <input type="url" id="linkedinUrl" placeholder="https://linkedin.com/in/yourprofile">
+        </div>
+        <div class="setting-item">
+          <label for="githubUrl">GitHub (optional)</label>
+          <input type="url" id="githubUrl" placeholder="https://github.com/username">
+        </div>
+        <div class="setting-item">
+          <label for="portfolioUrl">Portfolio (optional)</label>
+          <input type="url" id="portfolioUrl" placeholder="https://yoursite.com">
+        </div>
+        <div class="setting-item" style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="showAutoFillBtn" checked style="width:auto;">
+          <label for="showAutoFillBtn" style="font-size:11px;">Show 🤖 button on all websites</label>
+        </div>
+        <button id="saveProfile" class="btn btn-small">💾 Save Profile</button>
+      </div>
+    </details>
+
+    <!-- Job Application Tools -->
+    <details class="settings-section" id="jobApplicationSection">
+      <summary>📋 Apply to Job</summary>
+      <div class="settings-content">
+        <div id="currentJobInfo" style="margin-bottom:10px;padding:10px;background:#f0f4ff;border-radius:6px;display:none;">
+          <strong id="jobInfoTitle" style="display:block;font-size:13px;">-</strong>
+          <span id="jobInfoCompany" style="color:#666;font-size:12px;">-</span>
+          <span id="jobInfoLocation" style="color:#888;font-size:11px;display:block;">-</span>
+        </div>
+        
+        <button id="getJobDetailsBtn" class="btn btn-small" style="width:100%;margin-bottom:8px;">🔍 Get Job Details</button>
+        
+        <div style="display:flex;gap:6px;margin-bottom:8px;">
+          <button id="applyBtn" class="btn btn-small" style="flex:1;background:#22c55e;" disabled>📤 Apply</button>
+          <button id="autoFillBtn" class="btn btn-small" style="flex:1;background:#3b82f6;" disabled>✨ Auto-Fill</button>
+        </div>
+        
+        <!-- Hiring Team Section with Messaging -->
+        <div id="hiringTeamSection" style="display:none;margin-top:8px;padding:8px;background:#fef3c7;border-radius:6px;">
+          <h4 style="font-size:11px;margin-bottom:6px;color:#92400e;">👥 Hiring Team</h4>
+          <div id="hiringTeamList"></div>
+          
+          <!-- Message Template -->
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid #fcd34d;">
+            <label style="font-size:10px;color:#92400e;display:block;margin-bottom:4px;">💬 Message Template:</label>
+            <textarea id="messageTemplate" rows="3" style="width:100%;font-size:11px;padding:6px;border:1px solid #fcd34d;border-radius:4px;resize:vertical;" placeholder="Hi {name}, I saw you're hiring for {role} at {company}. I'm very interested in this opportunity..."></textarea>
+            <div style="display:flex;gap:4px;margin-top:6px;">
+              <button id="sendToAllHirersBtn" class="btn btn-small" style="flex:1;background:#0077b5;font-size:10px;">📨 Message All</button>
+              <button id="generateAiMessageBtn" class="btn btn-small" style="flex:1;background:#8b5cf6;font-size:10px;">🤖 AI Generate</button>
+            </div>
+            <div id="messageStatus" style="font-size:10px;margin-top:4px;color:#666;"></div>
+          </div>
+        </div>
+        
+        <div id="applyUrlSection" style="display:none;margin-top:8px;">
+          <a id="externalApplyLink" href="#" target="_blank" class="btn btn-small" style="display:block;text-align:center;text-decoration:none;background:#0077b5;color:white;">
+            🔗 Open External Application
+          </a>
+        </div>
+      </div>
+    </details>
+
+    <!-- Activity Log -->
+    <details class="log-section">
+      <summary>📋 Recent Activity</summary>
+      <div class="log-content" id="logContent">
+        <p class="log-empty">No activity yet</p>
+      </div>
+    </details>
+
+    <footer>
+      <p>v0.4.9 | API URLs Fixed 🔧</p>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
