@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "LinkedIn Auto Connector",
-  "version": "1.2.0",
-  "description": "Batch connect with LinkedIn suggestions and send AI-generated personalized messages",
+  "name": "NetConnect - Smart Networking Assistant",
+  "version": "1.4.0",
+  "description": "Smart networking assistant for LinkedIn connections with AI-generated personalized messages",
   "permissions": [
     "activeTab",
     "storage",
@@ -22,7 +22,7 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_title": "Click to open LinkedIn Connector panel"
+    "default_title": "Click to open NetConnect panel"
   },
   "icons": {
     "16": "icons/icon16.png",

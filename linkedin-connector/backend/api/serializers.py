@@ -78,6 +78,13 @@ class MessageGenerationRequestSerializer(serializers.Serializer):
     user_title = serializers.CharField(max_length=255, required=False, allow_blank=True)
     user_company = serializers.CharField(max_length=255, required=False, allow_blank=True)
     user_school = serializers.CharField(max_length=255, required=False, allow_blank=True)
+    user_major = serializers.CharField(max_length=255, required=False, allow_blank=True)
+    user_email = serializers.EmailField(required=False, allow_blank=True)
+    user_experience_level = serializers.ChoiceField(
+        choices=['student', 'entry', 'mid', 'senior', 'lead', 'director', 'executive', 'professor'],
+        required=False,
+        allow_blank=True
+    )
     user_skills = serializers.CharField(required=False, allow_blank=True)
     connection_purpose = serializers.CharField(required=False, allow_blank=True)
     
@@ -86,12 +93,19 @@ class MessageGenerationRequestSerializer(serializers.Serializer):
     target_title = serializers.CharField(max_length=255, required=False, allow_blank=True)
     target_company = serializers.CharField(max_length=255, required=False, allow_blank=True)
     
-    # Optional: specific tone or style
+    # Tone
     tone = serializers.ChoiceField(
-        choices=['professional', 'friendly', 'casual'],
+        choices=['professional', 'casual'],
         default='professional',
         required=False
     )
+    
+    # Include settings - what to mention in the message
+    include_title = serializers.BooleanField(default=True, required=False)
+    include_company = serializers.BooleanField(default=False, required=False)
+    include_school = serializers.BooleanField(default=True, required=False)
+    include_major = serializers.BooleanField(default=False, required=False)
+    include_email = serializers.BooleanField(default=False, required=False)
     
     def validate(self, data):
         """Ensure we have either a profile ID or inline user info."""

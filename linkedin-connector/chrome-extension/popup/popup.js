@@ -7,7 +7,12 @@ const DEFAULT_SETTINGS = {
   tone: 'professional',
   delay: 3,
   maxConnections: 8,
-  apiUrl: 'http://localhost:8000/api/v1'
+  apiUrl: 'http://localhost:8000/api/v1',
+  includeTitle: true,
+  includeCompany: false,
+  includeSchool: true,
+  includeMajor: false,
+  includeEmail: false
 };
 
 // State
@@ -67,7 +72,7 @@ function setupEventListeners() {
   document.getElementById('start-btn').addEventListener('click', handleStartConnecting);
   document.getElementById('stop-btn').addEventListener('click', handleStopConnecting);
   
-  // Refresh button
+  // Refresh button - reload Side Panel
   document.getElementById('refresh-btn').addEventListener('click', () => {
     window.location.reload();
   });
@@ -109,7 +114,7 @@ async function loadSettings() {
 function populateProfileForm(profile) {
   const fields = [
     'first_name', 'preferred_name', 'last_name', 'email', 
-    'current_title', 'current_company', 'target_role', 'target_industry', 
+    'experience_level', 'current_title', 'current_company', 'target_role', 'target_industry', 
     'school', 'major', 'graduation_year', 'skills', 'connection_purpose'
   ];
   
@@ -127,11 +132,25 @@ function populateProfileForm(profile) {
 function populateSettingsForm(settings) {
   document.getElementById('tone').value = settings.tone;
   document.getElementById('delay').value = settings.delay;
-  // Max connections - show placeholder if not set
+  
+  // Max connections
   const maxInput = document.getElementById('max-connections');
   if (maxInput && settings.maxConnections) {
     maxInput.value = settings.maxConnections;
   }
+  
+  // Checkboxes for AI message content
+  const includeTitle = document.getElementById('include-title');
+  const includeCompany = document.getElementById('include-company');
+  const includeSchool = document.getElementById('include-school');
+  const includeMajor = document.getElementById('include-major');
+  const includeEmail = document.getElementById('include-email');
+  
+  if (includeTitle) includeTitle.checked = settings.includeTitle !== false;
+  if (includeCompany) includeCompany.checked = settings.includeCompany === true;
+  if (includeSchool) includeSchool.checked = settings.includeSchool !== false;
+  if (includeMajor) includeMajor.checked = settings.includeMajor === true;
+  if (includeEmail) includeEmail.checked = settings.includeEmail === true;
 }
 
 /**
@@ -198,13 +217,18 @@ async function handleProfileSubmit(event) {
  */
 function handleSettingsSave() {
   const maxInput = document.getElementById('max-connections');
-  const maxValue = parseInt(maxInput.value, 10) || 8; // Default 8
+  const maxValue = parseInt(maxInput.value, 10) || 8;
   
   settings = {
     ...settings,
     tone: document.getElementById('tone').value,
     delay: parseInt(document.getElementById('delay').value, 10) || 3,
-    maxConnections: maxValue
+    maxConnections: maxValue,
+    includeTitle: document.getElementById('include-title').checked,
+    includeCompany: document.getElementById('include-company').checked,
+    includeSchool: document.getElementById('include-school').checked,
+    includeMajor: document.getElementById('include-major').checked,
+    includeEmail: document.getElementById('include-email').checked
   };
   
   chrome.storage.local.set({ settings });
@@ -226,13 +250,14 @@ async function checkLinkedInPage() {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
     if (tab && tab.url && tab.url.includes('linkedin.com/mynetwork')) {
+      // On LinkedIn page - show ready message
       document.getElementById('connection-status').innerHTML = `
-        <p style="color: #28a745;">✓ Connected to LinkedIn</p>
-        <p>Click "Scan Page" to find people to connect with.</p>
+        <p>Click <strong>Scan Page</strong> to find people to connect with.</p>
       `;
     }
+    // Otherwise keep the default "Please visit..." message
   } catch (error) {
-    console.error('Error checking tab:', error);
+    console.log('Tab check:', error.message);
   }
 }
 
@@ -241,6 +266,7 @@ async function checkLinkedInPage() {
  */
 async function handleScan() {
   const scanBtn = document.getElementById('scan-btn');
+  const statusEl = document.getElementById('connection-status');
   scanBtn.disabled = true;
   scanBtn.textContent = '🔍 Scanning...';
   
@@ -251,17 +277,55 @@ async function handleScan() {
       throw new Error('Please navigate to LinkedIn\'s My Network page first.');
     }
     
-    // Send message to content script to scan
+    // Try to ping content script first
+    let contentScriptReady = false;
+    try {
+      await chrome.tabs.sendMessage(tab.id, { action: 'ping' });
+      contentScriptReady = true;
+    } catch (e) {
+      console.log('Content script not found, injecting...');
+    }
+    
+    // If content script not ready, inject it
+    if (!contentScriptReady) {
+      statusEl.innerHTML = `<p style="color: #0a66c2;">🔄 Initializing...</p>`;
+      
+      // Inject CSS first
+      await chrome.scripting.insertCSS({
+        target: { tabId: tab.id },
+        files: ['content/content.css']
+      });
+      
+      // Inject JS
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ['content/content.js']
+      });
+      
+      // Wait a bit for script to initialize
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Verify injection worked
+      try {
+        await chrome.tabs.sendMessage(tab.id, { action: 'ping' });
+      } catch (e) {
+        throw new Error('Failed to initialize. Please refresh the LinkedIn page.');
+      }
+    }
+    
+    // Now scan
+    statusEl.innerHTML = `<p style="color: #0a66c2;">🔍 Scanning page...</p>`;
     const response = await chrome.tabs.sendMessage(tab.id, { action: 'scan' });
     
-    if (response && response.connections) {
+    if (response && response.connections && response.connections.length > 0) {
+      statusEl.innerHTML = `<p style="color: #28a745;">✓ Found ${response.connections.length} people</p>`;
       displayFoundConnections(response.connections);
     } else {
       throw new Error('No connections found. Try scrolling down the page first.');
     }
   } catch (error) {
     console.error('Scan error:', error);
-    document.getElementById('connection-status').innerHTML = `
+    statusEl.innerHTML = `
       <p style="color: #dc3545;">⚠️ ${error.message}</p>
     `;
   } finally {

@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LinkedIn Auto Connector</title>
+  <title>NetConnect</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>🔗 LinkedIn Connector</h1>
-      <p class="subtitle">AI-Powered Connection Requests</p>
+      <h1>🤝 NetConnect</h1>
+      <p class="subtitle">Smart Networking Assistant</p>
     </header>
 
     <!-- Tab Navigation -->
@@ -27,7 +27,10 @@
           <p>Please visit <a href="https://www.linkedin.com/mynetwork/grow/" target="_blank">linkedin.com/mynetwork/grow</a> to start.</p>
         </div>
 
-        <button id="scan-btn" class="btn btn-secondary btn-full">🔍 Scan Page</button>
+        <div class="scan-row">
+          <button id="scan-btn" class="btn btn-secondary">🔍 Scan Page</button>
+          <button id="refresh-btn" class="btn btn-icon" title="Reload">🔄</button>
+        </div>
 
         <div id="found-connections" class="found-connections" style="display: none;">
           <div class="found-header">
@@ -50,9 +53,9 @@
             <label class="mode-label">
               <input type="radio" name="connect-mode" value="message">
               <span class="mode-title">💬 Connect with AI Message</span>
-              <span class="mode-premium-badge">💎 Premium</span>
             </label>
-            <span class="mode-tooltip">Sends personalized AI-generated message. LinkedIn Premium advised.</span>
+            <span class="mode-premium-badge">💎 LinkedIn Premium advised</span>
+            <span class="mode-tooltip">Sends personalized AI-generated message with your profile info.</span>
           </div>
         </div>
 
@@ -64,8 +67,6 @@
             ⏹ Stop
           </button>
         </div>
-
-        <button id="refresh-btn" class="btn btn-link">🔄 Start over</button>
 
         <div id="progress-section" class="progress-section" style="display: none;">
           <div class="progress-bar">
@@ -103,6 +104,20 @@
 
         <div class="form-section">
           <h3>💼 Professional Info</h3>
+          <div class="form-group">
+            <label for="experience_level">Experience Level *</label>
+            <select id="experience_level" name="experience_level" required>
+              <option value="">Select your level</option>
+              <option value="student">Student</option>
+              <option value="entry">Entry Level (0-2 years)</option>
+              <option value="mid">Mid Level (3-5 years)</option>
+              <option value="senior">Senior Level (6+ years)</option>
+              <option value="lead">Lead / Manager</option>
+              <option value="director">Director / VP</option>
+              <option value="executive">Executive (C-suite)</option>
+              <option value="professor">Professor / Academic</option>
+            </select>
+          </div>
           <div class="form-group">
             <label for="current_title">Current Title</label>
             <input type="text" id="current_title" name="current_title" placeholder="Software Engineer">
@@ -170,10 +185,8 @@
           <label for="tone">Message Tone</label>
           <select id="tone" name="tone">
             <option value="professional">Professional</option>
-            <option value="friendly">Friendly</option>
             <option value="casual">Casual</option>
           </select>
-          <small>Tone for AI-generated messages</small>
         </div>
 
         <div class="form-group">
@@ -181,6 +194,55 @@
           <input type="number" id="delay" name="delay" value="3" min="1" max="30">
           <small>For AI Message mode only</small>
         </div>
+      </div>
+
+      <div class="form-section">
+        <h3>📝 Include in AI Messages</h3>
+        <small class="section-hint">Select what personal info to mention in your connection messages</small>
+        
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="include-title" name="include-title" checked>
+            <span>My Job Title</span>
+          </label>
+        </div>
+        
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="include-company" name="include-company">
+            <span>My Company</span>
+          </label>
+        </div>
+        
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="include-school" name="include-school" checked>
+            <span>My School</span>
+          </label>
+        </div>
+        
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="include-major" name="include-major">
+            <span>My Major</span>
+          </label>
+        </div>
+        
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="include-email" name="include-email">
+            <span>My Email Address</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="usage-warning">
+        <p>⚠️ <strong>Recommended daily limits:</strong></p>
+        <ul>
+          <li>Quick Connect: max 100 per day</li>
+          <li>Connect with Message: max 40 per day</li>
+        </ul>
+        <small>Exceeding these limits may trigger LinkedIn restrictions.</small>
       </div>
 
       <button id="save-settings" class="btn btn-primary">Save Settings</button>

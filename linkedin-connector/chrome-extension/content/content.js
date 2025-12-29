@@ -3,6 +3,12 @@
  * Runs on LinkedIn pages to scan and connect with suggestions
  */
 
+// Guard against double initialization
+if (window.linkedInConnectorInitialized) {
+  console.log('LinkedIn Auto Connector: Already initialized, skipping');
+} else {
+  window.linkedInConnectorInitialized = true;
+
 // State
 let isConnecting = false;
 let shouldStop = false;
@@ -44,6 +50,10 @@ function handleMessage(message, sender, sendResponse) {
   console.log('Content script received:', message);
   
   switch (message.action) {
+    case 'ping':
+      sendResponse({ status: 'ok' });
+      break;
+      
     case 'scan':
       const connections = scanPage();
       sendResponse({ connections });
@@ -787,12 +797,21 @@ async function generateMessage(target, userProfile, settings, apiUrl) {
         user_title: userProfile.current_title,
         user_company: userProfile.current_company,
         user_school: userProfile.school,
+        user_major: userProfile.major,
+        user_email: userProfile.email,
+        user_experience_level: userProfile.experience_level,
         user_skills: userProfile.skills,
         connection_purpose: userProfile.connection_purpose,
         target_name: target.name.split(' ')[0], // First name only
-        target_title: target.title,
+        target_title: target.title,  // Full title for AI analysis
         target_company: target.company,
-        tone: settings.tone
+        tone: settings.tone,
+        // Include settings
+        include_title: settings.includeTitle !== false,
+        include_company: settings.includeCompany === true,
+        include_school: settings.includeSchool !== false,
+        include_major: settings.includeMajor === true,
+        include_email: settings.includeEmail === true
       })
     });
     
@@ -803,23 +822,96 @@ async function generateMessage(target, userProfile, settings, apiUrl) {
     throw new Error('API error');
   } catch (error) {
     sendLog(`⚠️ Using fallback message`, 'info');
-    return generateFallbackMessage(target, userProfile);
+    return generateFallbackMessage(target, userProfile, settings);
   }
 }
 
 /**
  * Fallback message - clean and simple
  */
-function generateFallbackMessage(target, userProfile) {
+function generateFallbackMessage(target, userProfile, settings) {
   const firstName = target.name.split(' ')[0];
   const userName = userProfile.preferred_name || userProfile.first_name || '';
-  const purpose = userProfile.connection_purpose || 'expand our professional networks';
   
-  if (target.title && target.title.length > 5) {
-    return `Hi ${firstName}, I noticed your experience as ${target.title} and would love to connect! - ${userName}`.trim();
+  let intro = `Hi ${firstName}, `;
+  
+  // Build message based on include settings
+  if (settings?.includeSchool && userProfile.school) {
+    const school = userProfile.school;
+    // Use short name if casual
+    const shortSchool = settings.tone === 'casual' ? getShortSchoolName(school) : school;
+    if (settings?.includeMajor && userProfile.major) {
+      const major = settings.tone === 'casual' ? getShortMajor(userProfile.major) : userProfile.major;
+      intro += `${major} grad from ${shortSchool} here - `;
+    } else {
+      intro += `${shortSchool} alum here - `;
+    }
+  } else if (settings?.includeTitle && userProfile.current_title) {
+    intro += `fellow ${userProfile.current_title} here - `;
   }
   
-  return `Hi ${firstName}, I'd love to connect to ${purpose}! - ${userName}`.trim();
+  if (target.title && target.title.length > 5) {
+    return `${intro}your work as ${target.title} caught my eye. Hope to connect! - ${userName}`.trim();
+  }
+  
+  return `${intro}always great to connect with fellow professionals! - ${userName}`.trim();
+}
+
+/**
+ * Get short school name for casual tone
+ */
+function getShortSchoolName(school) {
+  const abbreviations = {
+    'university of pennsylvania': 'UPenn',
+    'upenn': 'UPenn',
+    'massachusetts institute of technology': 'MIT',
+    'california institute of technology': 'Caltech',
+    'university of california, berkeley': 'UC Berkeley',
+    'university of california, los angeles': 'UCLA',
+    'university of southern california': 'USC',
+    'new york university': 'NYU',
+    'carnegie mellon university': 'CMU',
+    'georgia institute of technology': 'Georgia Tech',
+    'university of michigan': 'UMich',
+    'university of texas at austin': 'UT Austin',
+    'university of illinois urbana-champaign': 'UIUC',
+    'university of illinois at urbana-champaign': 'UIUC',
+    'university of north carolina': 'UNC',
+    'university of virginia': 'UVA',
+    'university of wisconsin-madison': 'UW-Madison',
+    'university of washington': 'UW',
+    'duke university': 'Duke',
+    'stanford university': 'Stanford',
+    'harvard university': 'Harvard',
+    'yale university': 'Yale',
+    'princeton university': 'Princeton',
+    'columbia university': 'Columbia',
+    'cornell university': 'Cornell',
+    'brown university': 'Brown',
+    'dartmouth college': 'Dartmouth'
+  };
+  
+  const lower = school.toLowerCase();
+  return abbreviations[lower] || school;
+}
+
+/**
+ * Get short major name for casual tone
+ */
+function getShortMajor(major) {
+  const abbreviations = {
+    'computer science': 'CS',
+    'electrical engineering': 'EE',
+    'mechanical engineering': 'MechE',
+    'economics': 'Econ',
+    'mathematics': 'Math',
+    'political science': 'Poli Sci',
+    'business administration': 'Business',
+    'information technology': 'IT'
+  };
+  
+  const lower = major.toLowerCase();
+  return abbreviations[lower] || major;
 }
 
 /**
@@ -870,3 +962,5 @@ function sleep(ms) {
 
 // Initialize
 init();
+
+} // End of initialization guard

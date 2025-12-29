@@ -124,6 +124,7 @@ class GenerateMessageView(APIView):
                     'title': profile.current_title,
                     'company': profile.current_company,
                     'school': profile.school,
+                    'email': profile.email,
                     'skills': profile.skills,
                     'connection_purpose': profile.connection_purpose,
                 }
@@ -138,6 +139,9 @@ class GenerateMessageView(APIView):
                 'title': data.get('user_title', ''),
                 'company': data.get('user_company', ''),
                 'school': data.get('user_school', ''),
+                'major': data.get('user_major', ''),
+                'email': data.get('user_email', ''),
+                'experience_level': data.get('user_experience_level', ''),
                 'skills': data.get('user_skills', ''),
                 'connection_purpose': data.get('connection_purpose', ''),
             }
@@ -151,9 +155,18 @@ class GenerateMessageView(APIView):
         
         tone = data.get('tone', 'professional')
         
+        # Include settings - what to mention in the message
+        include_settings = {
+            'title': data.get('include_title', True),
+            'company': data.get('include_company', False),
+            'school': data.get('include_school', True),
+            'major': data.get('include_major', False),
+            'email': data.get('include_email', False),
+        }
+        
         # Generate message
         generator = GroqMessageGenerator()
-        message = generator.generate_message(user_info, target_info, tone)
+        message = generator.generate_message(user_info, target_info, tone, include_settings)
         
         # Update usage stats if we have a profile
         if data.get('user_profile_id'):

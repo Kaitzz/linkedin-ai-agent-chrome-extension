@@ -190,21 +190,98 @@ header h1 {
   margin-bottom: 12px;
 }
 
-.btn-link {
-  background: none;
-  border: none;
-  color: #666;
-  font-size: 0.8rem;
-  cursor: pointer;
-  padding: 8px;
-  width: 100%;
-  text-align: center;
-  margin-top: 4px;
+/* Scan row - Scan button + Reload button */
+.scan-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
-.btn-link:hover {
-  color: #0a66c2;
-  text-decoration: underline;
+.scan-row .btn-secondary {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-icon {
+  flex-shrink: 0;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:hover {
+  background: #e0e0e0;
+  border-color: #ccc;
+}
+
+/* Checkbox styles */
+.section-hint {
+  display: block;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.checkbox-group {
+  margin-bottom: 8px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 0;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checkbox-label span {
+  font-size: 0.85rem;
+  color: #333;
+}
+
+/* Usage warning */
+.usage-warning {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin: 12px 0;
+  font-size: 0.8rem;
+}
+
+.usage-warning p {
+  margin: 0 0 6px 0;
+  color: #856404;
+}
+
+.usage-warning ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #856404;
+}
+
+.usage-warning li {
+  margin: 2px 0;
+}
+
+.usage-warning small {
+  color: #856404;
+  display: block;
+  margin-top: 6px;
 }
 
 /* Status Messages */
@@ -297,12 +374,12 @@ header h1 {
 }
 
 .mode-premium-badge {
-  font-size: 0.65rem;
-  background: #fff3cd;
+  display: block;
+  font-size: 0.7rem;
   color: #856404;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-left: auto;
+  padding: 4px 12px;
+  margin-top: 2px;
+  margin-left: 24px;
 }
 
 .mode-tooltip {
