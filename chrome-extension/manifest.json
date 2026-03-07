@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "NetConnect - Smart Networking Assistant",
-  "version": "1.4.0",
+  "name": "LinkedIn Connect Helper",
+  "version": "1.5.0",
   "description": "Smart networking assistant for LinkedIn connections with AI-generated personalized messages",
   "permissions": [
     "activeTab",
@@ -21,7 +21,7 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_title": "Click to open NetConnect panel"
+    "default_title": "Click to open LinkedIn Connect Helper panel"
   },
   "icons": {
     "16": "icons/icon16.png",
