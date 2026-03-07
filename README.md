@@ -1,16 +1,16 @@
-# NetConnect — Smart Networking Assistant
+# LinkedIn Connect Helper
 
 A Chrome extension that helps you batch connect with LinkedIn suggestions and send AI-generated personalized messages. **No backend server required** — all AI message generation runs directly in the extension via the free Groq API.
 
 ## Features
 
-- 🔍 **Scan LinkedIn Page**: Automatically find "People you may know" suggestions on LinkedIn
-- 🤖 **AI-Generated Messages**: Create personalized connection messages using Groq (Llama 3.3 70B) — **free**
-- ⚡ **Two Modes**: Quick Connect (no message) or Connect with AI Message
-- 💬 **Smart Personalization**: AI considers seniority, shared school/industry, and your profile info
-- 📝 **Customizable**: Choose which personal info to include in messages (title, company, school, major, email)
-- 🎛️ **Configurable Tone**: Professional or Casual message styles
-- 💾 **Local Storage**: All profile data stored locally in Chrome — nothing leaves your browser except Groq API calls
+- **Scan LinkedIn Page**: Automatically find "People you may know" suggestions on LinkedIn
+- **AI-Generated Messages**: Create personalized connection messages using Groq (Llama 3.3 70B) — **free**
+- **Two Modes**: Quick Connect (no message) or Connect with AI Message
+- **Smart Personalization**: AI considers seniority, shared school/industry, and your profile info
+- **Customizable**: Choose which personal info to include in messages (title, company, school, major, email)
+- **Configurable Tone**: Professional or Casual message styles
+- **Local Storage**: All profile data stored locally in Chrome — nothing leaves your browser except Groq API calls
 
 ## Project Structure
 

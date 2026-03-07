@@ -3,15 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NetConnect</title>
+  <title>LinkedIn Connect Helper</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="container">
-    <header>
-      <h2>🤝 NetConnect</h2>
-      <p class="subtitle">Smart Networking Assistant</p>
-    </header>
 
     <!-- Tab Navigation -->
     <nav class="tabs">
@@ -82,7 +78,6 @@
     <div id="profile-tab" class="tab-content">
       <form id="profile-form">
         <div class="form-section">
-          <h3>👤 Basic Info</h3>
           <div class="form-group">
             <label for="first_name">First Name *</label>
             <input type="text" id="first_name" name="first_name" required placeholder="John">
@@ -90,7 +85,6 @@
           <div class="form-group">
             <label for="preferred_name">Preferred First Name</label>
             <input type="text" id="preferred_name" name="preferred_name" placeholder="Johnny (optional)">
-            <small>Used in messages if provided</small>
           </div>
           <div class="form-group">
             <label for="last_name">Last Name *</label>
@@ -103,65 +97,59 @@
         </div>
 
         <div class="form-section">
-          <h3>💼 Professional Info</h3>
           <div class="form-group">
             <label for="experience_level">Experience Level *</label>
             <select id="experience_level" name="experience_level" required>
-              <option value="">Select your level</option>
               <option value="student">Student</option>
               <option value="entry">Entry Level (0-2 years)</option>
               <option value="mid">Mid Level (3-5 years)</option>
               <option value="senior">Senior Level (6+ years)</option>
               <option value="lead">Lead / Manager</option>
               <option value="director">Director / VP</option>
-              <option value="executive">Executive (C-suite)</option>
               <option value="professor">Professor / Academic</option>
             </select>
           </div>
           <div class="form-group">
             <label for="current_title">Current Title</label>
-            <input type="text" id="current_title" name="current_title" placeholder="Software Engineer">
+            <input type="text" id="current_title" name="current_title">
           </div>
           <div class="form-group">
             <label for="current_company">Current Company</label>
-            <input type="text" id="current_company" name="current_company" placeholder="Tech Corp">
+            <input type="text" id="current_company" name="current_company">
           </div>
           <div class="form-group">
             <label for="target_role">Target Role</label>
-            <input type="text" id="target_role" name="target_role" placeholder="Senior Software Engineer">
+            <input type="text" id="target_role" name="target_role">
           </div>
           <div class="form-group">
             <label for="target_industry">Target Industry</label>
-            <input type="text" id="target_industry" name="target_industry" placeholder="Technology">
+            <input type="text" id="target_industry" name="target_industry">
           </div>
         </div>
 
         <div class="form-section">
-          <h3>🎓 Education</h3>
           <div class="form-group">
             <label for="school">School</label>
-            <input type="text" id="school" name="school" placeholder="Stanford University">
+            <input type="text" id="school" name="school">
           </div>
           <div class="form-group">
             <label for="major">Major</label>
-            <input type="text" id="major" name="major" placeholder="Computer Science">
+            <input type="text" id="major" name="major">
           </div>
           <div class="form-group">
             <label for="graduation_year">Graduation Year</label>
-            <input type="text" id="graduation_year" name="graduation_year" placeholder="2022">
+            <input type="text" id="graduation_year" name="graduation_year">
           </div>
         </div>
 
         <div class="form-section">
-          <h3>✨ Additional Info</h3>
           <div class="form-group">
             <label for="skills">Skills (comma-separated)</label>
-            <input type="text" id="skills" name="skills" placeholder="Python, JavaScript, React">
+            <input type="text" id="skills" name="skills">
           </div>
           <div class="form-group">
             <label for="connection_purpose">Connection Purpose</label>
-            <textarea id="connection_purpose" name="connection_purpose" rows="2" 
-              placeholder="Looking for opportunities in AI/ML field"></textarea>
+            <textarea id="connection_purpose" name="connection_purpose" rows="2"></textarea>
           </div>
         </div>
 
