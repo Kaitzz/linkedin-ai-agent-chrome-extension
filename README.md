@@ -17,17 +17,17 @@ A Chrome extension that helps you batch connect with LinkedIn suggestions and se
 ```
 linkedin-connector/
 └── chrome-extension/        # Chrome Extension (Manifest V3)
-    ├── manifest.json        # Extension config & permissions
+    ├── manifest.json
     ├── popup/               # Side panel UI
-    │   ├── popup.html       # Main UI (Connect / Profile / Settings tabs)
-    │   ├── popup.js         # UI logic, local storage management
-    │   └── popup.css        # Styling
+    │   ├── popup.html
+    │   ├── popup.js
+    │   └── popup.css
     ├── content/             # LinkedIn page scripts
-    │   ├── content.js       # Page scanning, form handling, Connect flow
-    │   └── content.css      # Injected LinkedIn styles
+    │   ├── content.js
+    │   └── content.css
     ├── background/          # Service worker
-    │   └── background.js    # Tab management, Groq API calls, AI prompt engineering
-    └── icons/               # Extension icons
+    │   └── background.js
+    └── icons/
 ```
 
 ## Setup
@@ -81,7 +81,7 @@ linkedin-connector/
    - Fill in the message and click Send
    - Auto-close the tab and move to the next person
 
-> 💎 **Note**: LinkedIn Premium is recommended for the AI Message mode, as free accounts have limited custom invite note capabilities.
+> **Note**: LinkedIn Premium is recommended for the AI Message mode, as free accounts have limited custom invite note capabilities.
 
 ## How It Works
 
@@ -120,7 +120,3 @@ Side Panel UI ──► Content Script (LinkedIn page)
 ## License
 
 MIT License — Feel free to modify and use for your own purposes.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
