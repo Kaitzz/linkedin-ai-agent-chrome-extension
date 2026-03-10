@@ -1,4 +1,4 @@
-# LinkedIn Connect Helper
+# LinkedIn Genie –– the Connect Helper
 
 A Chrome extension that helps you batch connect with LinkedIn suggestions and send AI-generated personalized messages. **No backend server required** — all AI message generation runs directly in the extension via the free Groq API.
 
@@ -104,12 +104,13 @@ Side Panel UI ──► Content Script (LinkedIn page)
 
 ⚠️ **LinkedIn Terms of Service**: Use this tool responsibly and in accordance with LinkedIn's terms of service. Excessive automation may result in account restrictions.
 
-⚠️ **Recommended Daily Limits**:
+**Recommended Daily Limits**:
+
 - Quick Connect: max **100** per day
 - Connect with Message: max **40** per day
 - Exceeding these limits may trigger LinkedIn restrictions
 
-⚠️ **Rate Limiting**: The extension includes configurable delays between connections (default 3 seconds). Don't set the delay too low.
+**Rate Limiting**: The extension includes configurable delays between connections (default 3 seconds). Don't set the delay too low.
 
 ## Tech Stack
 
